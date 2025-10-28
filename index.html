@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小猫表白</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #ffebf3; /* 淡粉红色 */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .cat-image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 外层包裹保证按钮组始终居中 */
+        .buttons-wrapper {
+            display: flex;
+            justify-content: center; /* 整体居中 */
+            width: 100%;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px; /* 初始间距 */
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .yes {
+            background-color: #ff6b81; /* 粉红色 */
+        }
+
+        .no {
+            background-color: #70a1ff; /* 蓝色 */
+        }
+
+        .hidden {
+            display: none; /* 初始隐藏 */
+        }
+
+        .final-image {
+            width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .final-message {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主页面内容 -->
+    <div id="mainContent">
+        <img src="./images/cat1.png" alt="小猫" class="cat-image" id="catImage">
+        <div class="message">可以和我在一起吗？<br>距离交给我来解决就好</div>
+
+        <div class="buttons-wrapper">
+            <div class="buttons">
+                <button class="button yes" id="yesButton">可以</button>
+                <button class="button no" id="noButton">不要</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- “喜欢你”页面内容 -->
+    <div id="yesContent" class="hidden">
+        <img src="./images/cat8.png" alt="小猫" class="final-image">
+        <div class="final-message">喜欢你！！！</div>
+    </div>
+
+    <!-- “可是我喜欢你啊”页面内容 -->
+    <div id="confessionContent" class="hidden">
+        <img src="./images/emoji_bixin.jpg" alt="表白图片" class="final-image">
+        <div class="final-message">可是我喜欢你啊</div>
+    </div>
+
+    <script>
+        const mainContent = document.getElementById('mainContent');
+        const yesContent = document.getElementById('yesContent');
+        const confessionContent = document.getElementById('confessionContent');
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const buttonsContainer = document.querySelector('.buttons');
+        const catImage = document.getElementById('catImage');
+
+        // 图片列表
+        const imageList = [
+            './images/cat1.png',
+            './images/cat2.png',
+            './images/cat3.png',
+            './images/cat4.png',
+            './images/cat5.png',
+            './images/cat6.png',
+            './images/cat7.png'
+        ];
+
+        let imageIndex = 0;
+        let clickCount = 0;
+        const maxClicks = 6;
+
+        // 点击“可以”按钮显示“喜欢你”页面
+        yesButton.addEventListener('click', () => {
+            mainContent.classList.add('hidden');
+            yesContent.classList.remove('hidden');
+        });
+
+        // 点击“不要”按钮逻辑
+        noButton.addEventListener('click', () => {
+            if (imageIndex < imageList.length - 1) {
+                imageIndex++;
+                catImage.src = imageList[imageIndex];
+            }
+
+            if (clickCount < maxClicks) {
+                // 放大“可以”按钮
+                const currentYesScale = parseFloat(yesButton.style.transform.replace('scale(', '').replace(')', '')) || 1;
+                const newYesScale = currentYesScale + 0.2;
+                yesButton.style.transform = `scale(${newYesScale})`;
+                yesButton.style.transition = 'transform 0.3s ease';
+
+                // 缩小“不要”按钮
+                const currentNoScale = parseFloat(noButton.style.transform.replace('scale(', '').replace(')', '')) || 1;
+                const newNoScale = currentNoScale - 0.1;
+                noButton.style.transform = `scale(${newNoScale})`;
+                noButton.style.transition = 'transform 0.3s ease';
+
+                // 增加按钮间距避免重叠
+                const currentGap = parseFloat(getComputedStyle(buttonsContainer).gap) || 20;
+                const newGap = currentGap + 10;
+                buttonsContainer.style.gap = `${newGap}px`;
+
+                clickCount++;
+            } else if (clickCount === maxClicks) {
+                mainContent.classList.add('hidden');
+                confessionContent.classList.remove('hidden');
+                clickCount++;
+            }
+        });
+    </script>
+</body>
+</html>
